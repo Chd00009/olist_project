@@ -17,3 +17,40 @@ WITH first_purchase AS (
     FROM orders
     GROUP BY customer_id
 ),
+
+-- 2:
+subsequent_orders AS (
+    SELECT
+        o.customer_id,
+        o.order_id,
+        o.order_purchase_timestamp,
+        fp.first_order_date,
+        fp.cohort_month,
+        DATEDIFF('day', fp.first_order_date, o.order_purchase_timestamp) AS days_since_first
+    FROM orders o
+    JOIN first_purchase fp
+      ON o.customer_id = fp.customer_id
+    WHERE o.order_purchase_timestamp > fp.first_order_date
+),
+
+-- 3:
+retention_counts AS (
+    SELECT
+        cohort_month,
+        COUNT(DISTINCT CASE WHEN days_since_first <= 30 THEN customer_id END) AS day_30,
+        COUNT(DISTINCT CASE WHEN days_since_first <= 60 THEN customer_id END) AS day_60,
+        COUNT(DISTINCT CASE WHEN days_since_first <= 90 THEN customer_id END) AS day_90,
+        COUNT(DISTINCT customer_id) AS cohort_size
+    FROM subsequent_orders
+    GROUP BY cohort_month
+)
+
+-- 4: Final Select – calculate retention rates
+SELECT
+    cohort_month,
+    cohort_size,
+    ROUND(100.0 * day_30 / cohort_size, 2) AS retention_30_day_pct,
+    ROUND(100.0 * day_60 / cohort_size, 2) AS retention_60_day_pct,
+    ROUND(100.0 * day_90 / cohort_size, 2) AS retention_90_day_pct
+FROM retention_counts
+ORDER BY cohort_month;
