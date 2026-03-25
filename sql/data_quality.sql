@@ -1,0 +1,11 @@
+-- Business Question:
+-- How reliable and complete is the Olist dataset, and are there any anomalies 
+-- (missing values, orphaned foreign keys, duplicates, or gaps in date coverage) 
+-- that could affect downstream analysis?
+
+-- Approach:
+-- 1. Row Counts
+-- 2. NULL Rate for Key Columns
+-- 3. Orphaned Foreign Keys
+-- 4. Date Coverage
+-- 5. Duplicates
