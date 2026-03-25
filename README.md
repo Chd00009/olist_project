@@ -17,7 +17,7 @@ SQL, run from the DuckDB CLI
 
 ---
 
-## Data Quality Audit
+## 1. Data Quality Audit
 
 -- Business Question:
 -- How reliable and complete is the Olist dataset, and are there any anomalies 
@@ -33,7 +33,7 @@ SQL, run from the DuckDB CLI
 
 ---
 
-## 1. Cohort Retention Analysis
+## 2. Cohort Retention Analysis
 
 -- Business Question:
 -- Which customer cohorts retain the most over 30, 60, and 90 days after their first purchase?
@@ -47,7 +47,7 @@ SQL, run from the DuckDB CLI
 
 ---
 
-## 2. Seller Performance Scorecard
+## 3. Seller Performance Scorecard
 
 -- Business question: 
 -- Which states consistently receive orders faster or slower than estimated delivery times?
@@ -59,7 +59,7 @@ SQL, run from the DuckDB CLI
 
 ---
 
-## 3. ABC Inventory Classification
+## 4. ABC Inventory Classification
 
 -- Business question:
 -- Classify products into A/B/C tiers based on revenue contribution (Pareto principle).
@@ -71,15 +71,16 @@ SQL, run from the DuckDB CLI
 
 ---
 
-## 4. Delivery Time Analysis By Geography
+## 5. Delivery Time Analysis By Geography
 
 -- Business question:
--- Classify products into A/B/C tiers based on revenue contribution (Pareto principle).
+-- Identify regions where deliveries are consistently faster or slower than estimated.
 
 -- Approach:
--- 1. Calculate total revenue per product.
--- 2. Compute cumulative revenue and percent of total revenue using window functions.
--- 3. Assign ABC class: A (top 80%), B (next 15%), C (bottom 5%).
+-- 1. Join orders -> customers -> geolocation for regional info
+-- 2. Compute delivery delay (days actual vs estimated)
+-- 3. Aggregate by customer_state and optionally customer_city
+-- 4. Rank states by average delay to find consistent over/under-delivery regions
 
 ---
 
@@ -89,9 +90,9 @@ SQL, run from the DuckDB CLI
 /olist_project
  ├─ olist.duckdb
  ├─ sql/
- │   ├─ data_quality.sql
- │   ├─ customer_retention.sql
- │   ├─ seller_scorecard.sql
- │   ├─ abc_classification.sql
- │   └─ time_analysis.sql
+ │   ├─ query1_data_quality.sql
+ │   ├─ query2_customer_retention.sql
+ │   ├─ query3_seller_scorecard.sql
+ │   ├─ query4_abc_classification.sql
+ │   └─ query5_time_analysis.sql
  └─ README.md
