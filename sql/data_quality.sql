@@ -1,4 +1,16 @@
--- Section A: Row Counts
+-- Business Question:
+-- How reliable and complete is the Olist dataset, and are there any anomalies 
+-- (missing values, orphaned foreign keys, duplicates, or gaps in date coverage) 
+-- that could affect downstream analysis?
+
+-- Approach:
+-- 1. Row Counts
+-- 2. NULL Rate for Key Columns
+-- 3. Orphaned Foreign Keys
+-- 4. Date Coverage
+-- 5. Duplicates
+
+-- 1:
 WITH row_counts AS (
     SELECT 'orders' AS table_name, COUNT(*) AS row_count FROM orders
     UNION ALL
@@ -20,7 +32,7 @@ WITH row_counts AS (
 )
 SELECT * FROM row_counts;
 
--- Section B: NULL Rate for Key Columns
+-- 2:
 WITH null_rates AS (
     SELECT 'orders' AS table_name, 'customer_id' AS column_name,
            COUNT(*) FILTER (WHERE customer_id IS NULL) * 1.0 / COUNT(*) AS null_rate
@@ -34,7 +46,7 @@ WITH null_rates AS (
 )
 SELECT * FROM null_rates;
 
--- Section C: Orphaned Foreign Keys
+-- 3:
 WITH orphan_orders AS (
     SELECT COUNT(*) AS orphan_count
     FROM orders o
@@ -59,7 +71,7 @@ SELECT * FROM orphan_order_items
 UNION ALL
 SELECT * FROM orphan_payments;
 
--- Section D: Date Coverage
+-- 4:
 WITH order_dates AS (
     SELECT MIN(order_purchase_timestamp) AS min_date,
            MAX(order_purchase_timestamp) AS max_date
@@ -67,7 +79,7 @@ WITH order_dates AS (
 )
 SELECT * FROM order_dates;
 
--- Section E: Duplicates
+-- 5:
 WITH duplicate_customers AS (
     SELECT customer_id, COUNT(*) AS cnt
     FROM customers
